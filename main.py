@@ -1,21 +1,23 @@
-import pygame
 import random
-from Exceptions import *
-from os import path
-from Map import *
 from Wall import *
 from Bullet import *
 from pygame.math import Vector2
+from os import path
+
+snd_dir = path.join(path.dirname(__file__), 'sounds')
+img_dir = path.join(path.dirname(__file__), 'image')
 
 #картинки
-player_stand = pygame.image.load('ded3.png')
-player_right = pygame.image.load('ded_right2.png')
-player_left = pygame.image.load('ded_left2.png')
-player_up = pygame.image.load('ded_up2.png')
-player_stand = pygame.transform.scale(player_stand, (60,55))
+player_stand = pygame.image.load(path.join(img_dir,'ded3.png'))
+player_right = pygame.image.load(path.join(img_dir,'ded_right2.png'))
+player_left = pygame.image.load(path.join(img_dir,'ded_left2.png'))
+player_up = pygame.image.load(path.join(img_dir,'ded_up2.png'))
+player_stand = pygame.transform.scale(player_stand, (64,59))
 player_right = pygame.transform.scale(player_right, (60,55))
 player_left = pygame.transform.scale(player_left, (60,55))
 player_up = pygame.transform.scale(player_up, (60,55))
+item_picture = pygame.image.load(path.join(img_dir,'ChestRed.png'))
+item_picture = pygame.transform.scale(item_picture, (33,33))
 
 #размер карты
 MAP_WIDTH = 20
@@ -54,7 +56,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = Vector2(pos)
         self.speed = Vector2(0,0)
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
-        self.vel = 8 #величина скорости
+        self.vel = 7 #величина скорости
+        self.coin = 0
+        self.Weapon = Bullet
 
     def update(self):
         self.speed = Vector2(0,0)
@@ -94,7 +98,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += self.speed.y
 
     def shoot(self):
-        bullet = Bullet(self.rect.center)
+        bullet = self.Weapon(self.rect.center)
         if(self.left == 1):
             bullet.direction = 'LEFT'
         elif (self.right == 1):
@@ -110,8 +114,7 @@ class Player(pygame.sprite.Sprite):
 class Item(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((65,70))
-        self.image.fill(RED)
+        self.image = item_picture
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
 
@@ -126,12 +129,13 @@ clock = pygame.time.Clock()
 background = pygame.image.load(path.join('BG.png')).convert()
 background_rect = background.get_rect()
 
+#добавление спрайтов
 all_sprites = pygame.sprite.Group()
 items = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 player = Player((total_level_width/2, total_level_height/2))
 camera = Vector2(total_level_width/2, total_level_height/2)
-all_sprites.add(player)
+
 platforms = []
 # счетчик
 score = 0
@@ -158,13 +162,26 @@ for row in MAP.ourMap: # вся строка
     coord.y += PLATFORM_HEIGHT    #то же самое и с высотой
     coord.x = 0                   #на каждой новой строчке начинаем с нуля
     i += 1
+all_sprites.add(player)
 
-shoot_sound = pygame.mixer.Sound('shooti1.wav')
-shoot_sound.set_volume(0.03)
-pygame.mixer.music.load('CrushingEnemies.mp3')
+#отображение текста
+font_name = pygame.font.match_font('arial')
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, BLACK)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+#звуки
+shoot_sound = pygame.mixer.Sound(path.join(snd_dir,'shooti1.wav'))
+shoot_sound.set_volume(0.08)
+pygame.mixer.music.load(path.join(snd_dir,'CrushingEnemies.mp3'))
 pygame.mixer.music.set_volume(0.1)
 pygame.mixer.music.play(loops=-1)
-
+chest_sound = pygame.mixer.Sound(path.join(snd_dir,'coin1.wav'))
+chest_sound.set_volume(0.05)
+gun_sound = pygame.mixer.Sound(path.join(snd_dir,'gun.wav'))
+gun_sound.set_volume(0.3)
 # Цикл игры
 running = True
 while running:
@@ -179,24 +196,29 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
                 if (pygame.sprite.spritecollide(player, items, True)):
-                    score += 1
+                    n = random.randint(0,6) #рандомное целое на отрезке. для вероятности.
+                    if n != 6:
+                        score += 1
+                        chest_sound.play()
+                    else:
+                        player.Weapon = Gun
+                        gun_sound.play()
             if event.key == pygame.K_SPACE:
                 player.shoot()
 
     # Обновление
     all_sprites.update()
-
+    #движение карты
     heading = player.rect.center - camera
     camera += heading * 0.1
     offset = -camera + Vector2(WIDTH//2, HEIGHT//2)
-
+    
     # Рендеринг
-    #screen.fill(GREEN)
     screen.blit(background, background_rect)
-    #all_sprites.draw(screen)
-    #screen.blit(player.image, player.rect.topleft + offset)
     for s in all_sprites:
         screen.blit(s.image, s.rect.topleft + offset)
+
+    draw_text(screen, str(score), 18, WIDTH / 2, 10)
     # После отрисовки всего, переворачиваем экран
     pygame.display.flip()
 
