@@ -210,9 +210,18 @@ while running:
     all_sprites.update()
     #движение карты
     heading = player.rect.center - camera
-    camera += heading * 0.1
+    camera += heading*0.1
     offset = -camera + Vector2(WIDTH//2, HEIGHT//2)
-    
+    if -offset.x < 0:
+        offset.x = 0
+    if -offset.x > 650:
+        offset.x = -650
+
+    if -offset.y < 0:
+        offset.y = 0
+    if -offset.y > 700:
+        offset.y = -700
+
     # Рендеринг
     screen.blit(background, background_rect)
     for s in all_sprites:
