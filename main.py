@@ -1,3 +1,8 @@
+# управление игроком: ASDW или стрелочками
+# взаимодействие с предметами: Е
+# стрельба: SPACE
+
+
 import random
 from Wall import *
 from Weapon import *
