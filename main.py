@@ -1,6 +1,6 @@
 import random
 from Wall import *
-from Bullet import *
+from Weapon import *
 from pygame.math import Vector2
 from os import path
 
@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
         self.vel = 7 #величина скорости
         self.coin = 0
-        self.Weapon = Bullet
+        self.Weap = Tomato
 
     def update(self):
         self.speed = Vector2(0,0)
@@ -98,7 +98,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += self.speed.y
 
     def shoot(self):
-        bullet = self.Weapon(self.rect.center)
+        bullet = self.Weap(self.rect.center)
         if(self.left == 1):
             bullet.direction = 'LEFT'
         elif (self.right == 1):
@@ -201,7 +201,7 @@ while running:
                         score += 1
                         chest_sound.play()
                     else:
-                        player.Weapon = Gun
+                        player.Weap = Gun
                         gun_sound.play()
             if event.key == pygame.K_SPACE:
                 player.shoot()
