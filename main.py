@@ -190,15 +190,18 @@ while running:
     heading = player.rect.center - camera
     camera += heading*0.1
     offset = -camera + Vector2(WIDTH//2, HEIGHT//2)
-    if -offset.x < 0:
-        offset.x = 0
-    if -offset.x > 650:
-        offset.x = -650
+    X = MAP_WIDTH*WALL_WIDTH - WIDTH
+    Y = MAP_HEIGHT*WALL_HEIGHT - HEIGHT
 
-    if -offset.y < 0:
+    if offset.x < 0:
+        offset.x = 0
+    if offset.x > X :
+        offset.x = X
+
+    if offset.y < 0:
         offset.y = 0
-    if -offset.y > 700:
-        offset.y = -700
+    if offset.y > Y:
+        offset.y = Y
 
     # Рендеринг
     screen.blit(background, background_rect)
