@@ -5,6 +5,22 @@
 MAP_WIDTH = 20
 MAP_HEIGHT = 20
 
+#размер карты
+MAP_WIDTH = 20
+MAP_HEIGHT = 20
+
+#размер стен по пикселям
+WALL_WIDTH = 65
+WALL_HEIGHT = 70
+
+#размер вещей по пикселям
+ITEM_WIDTH = 65
+ITEM_HEIGHT = 70
+
+#размер карты в пикселях
+total_level_width  = MAP_WIDTH*WALL_WIDTH # Высчитываем фактическую ширину уровня
+total_level_height = MAP_HEIGHT*WALL_HEIGHT   # высоту
+
 
 def createMap(N, M, lBMin, lBMax, cB, cI):
 
