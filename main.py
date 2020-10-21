@@ -22,22 +22,6 @@ tomato2 = pygame.transform.scale(tomato2, (30,30))
 gun = pygame.image.load(path.join(img_dir,'Gun.png'))
 gun = pygame.transform.scale(gun, (30,30))
 
-#размер карты
-MAP_WIDTH = 20
-MAP_HEIGHT = 20
-
-#размер стен по пикселям
-WALL_WIDTH = 65
-WALL_HEIGHT = 70
-
-#размер вещей по пикселям
-ITEM_WIDTH = 65
-ITEM_HEIGHT = 70
-
-#размер карты в пикселях
-total_level_width  = MAP_WIDTH*WALL_WIDTH # Высчитываем фактическую ширину уровня
-total_level_height = MAP_HEIGHT*WALL_HEIGHT   # высоту
-
 #размер экрана
 WIDTH = 650
 HEIGHT = 700
