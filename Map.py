@@ -130,4 +130,4 @@ class Map(object):
             print(s)
 
 #наша карта
-MAP = Map(MAP_WIDTH, MAP_HEIGHT)
+MAP = Map(MAP_HEIGHT, MAP_WIDTH)
