@@ -1,11 +1,7 @@
-# управление игроком: ASDW или стрелочками
-# взаимодействие с предметами: Е
-# стрельба: SPACE
-
-
 import random
 from Wall import *
 from Weapon import *
+from Item import *
 from pygame.math import Vector2
 from os import path
 
@@ -21,8 +17,10 @@ player_stand = pygame.transform.scale(player_stand, (64,59))
 player_right = pygame.transform.scale(player_right, (60,55))
 player_left = pygame.transform.scale(player_left, (60,55))
 player_up = pygame.transform.scale(player_up, (60,55))
-item_picture = pygame.image.load(path.join(img_dir,'ChestRed.png'))
-item_picture = pygame.transform.scale(item_picture, (33,33))
+tomato2 = pygame.image.load(path.join(img_dir,'tomato.png'))
+tomato2 = pygame.transform.scale(tomato2, (30,30))
+gun = pygame.image.load(path.join(img_dir,'Gun.png'))
+gun = pygame.transform.scale(gun, (30,30))
 
 #размер карты
 MAP_WIDTH = 20
@@ -39,7 +37,6 @@ ITEM_HEIGHT = 70
 #размер карты в пикселях
 total_level_width  = MAP_WIDTH*WALL_WIDTH # Высчитываем фактическую ширину уровня
 total_level_height = MAP_HEIGHT*WALL_HEIGHT   # высоту
-
 
 #размер экрана
 WIDTH = 650
@@ -116,14 +113,6 @@ class Player(pygame.sprite.Sprite):
         bullets.add(bullet)
         shoot_sound.play()
 
-class Item(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = item_picture
-        self.rect = self.image.get_rect()
-        self.rect.topleft = pos
-
-
 # Создаем игру и окно
 pygame.init()
 pygame.mixer.init()
@@ -131,7 +120,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("My Game")
 clock = pygame.time.Clock()
 #графика
-background = pygame.image.load(path.join('BG.png')).convert()
+background = pygame.image.load(path.join(img_dir,'BG.png')).convert()
 background_rect = background.get_rect()
 
 #добавление спрайтов
@@ -201,8 +190,8 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
                 if (pygame.sprite.spritecollide(player, items, True)):
-                    n = random.randint(0,6) #рандомное целое на отрезке. для вероятности.
-                    if n != 6:
+                    n = random.randint(0,4) #рандомное целое на отрезке. для вероятности.
+                    if n != 4:
                         score += 1
                         chest_sound.play()
                     else:
@@ -229,10 +218,15 @@ while running:
 
     # Рендеринг
     screen.blit(background, background_rect)
+
     for s in all_sprites:
         screen.blit(s.image, s.rect.topleft + offset)
 
     draw_text(screen, str(score), 18, WIDTH / 2, 10)
+    if player.Weap == Tomato:
+        screen.blit(tomato2, Vector2(20,20))
+    elif player.Weap == Gun:
+        screen.blit(gun, Vector2(20, 20))
     # После отрисовки всего, переворачиваем экран
     pygame.display.flip()
 
