@@ -1,6 +1,6 @@
 import pygame
 from Exceptions import *
-from Map import MAP
+from Map import *
 from pygame.math import Vector2
 from os import path
 
