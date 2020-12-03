@@ -3,6 +3,7 @@ from Exceptions import *
 from Map import *
 from pygame.math import Vector2
 from os import path
+#hi
 
 img_dir = path.join(path.dirname(__file__), 'image')
 
